@@ -147,7 +147,11 @@ class LiteralAttrs(object):
                 k1, k2 = name.split('.', 1)
                 dd[k1][k2] = ast.literal_eval(literal)
             else:
-                dd[name] = ast.literal_eval(literal)
+                try:
+                    dd[name] = ast.literal_eval(literal)
+                except ValueError:
+                    logging.warn('Replaced %s with None', literal)
+                    dd[name] = None
         vars(self).update(dd)
 
     def __repr__(self):

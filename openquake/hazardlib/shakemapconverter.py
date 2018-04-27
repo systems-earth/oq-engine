@@ -74,6 +74,7 @@ def _get_shakemap_array(xml_file):
         else:
             # for lon, lat, vs30
             data[field] = F32(out[name])
+    data.sort(order=['lon', 'lat'])
     return data
 
 
@@ -81,7 +82,7 @@ def get_shakemap_array(grid_file, uncertainty_file=None):
     """
     :param grid_file: a shakemap grid file
     :param uncertainty_file: a shakemap uncertainty_file file
-    :returns: array with fields lon, lat, vs30, val, std
+    :returns: array with fields lon, lat, vs30, val, std ordered by lon, lat
     """
     data = _get_shakemap_array(grid_file)
     if uncertainty_file:
