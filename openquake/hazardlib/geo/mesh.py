@@ -529,9 +529,9 @@ class RectangularMesh(Mesh):
             assert len(row) == num_cols, \
                    'lists of points are not of uniform length'
             for j, point in enumerate(row):
-                lons[i][j] = point.longitude
-                lats[i][j] = point.latitude
-                depths[i][j] = point.depth
+                lons[i, j] = point.longitude
+                lats[i, j] = point.latitude
+                depths[i, j] = point.depth
         if not depths.any():
             depths = None
         return cls(lons, lats, depths)
