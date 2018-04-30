@@ -23,7 +23,7 @@ import numpy
 from shapely import geometry
 from openquake.baselib.general import split_in_blocks, not_equal
 from openquake.hazardlib.geo.utils import fix_lon, cross_idl
-from openquake.hazardlib.geo.mesh import Mesh
+from openquake.hazardlib.geo.mesh import Mesh, get_border
 
 
 class Site(object):
@@ -224,6 +224,7 @@ class SiteCollection(object):
         """
         Build a complete SiteCollection from a list of Site objects
         """
+        self._border = None
         self.indices = None
         if hasattr(sites, 'sids'):
             numpy.testing.assert_equal(sites.sids, numpy.arange(len(sites)))
@@ -269,6 +270,13 @@ class SiteCollection(object):
         return Mesh(self.lons, self.lats, self.depths)
 
     @property
+    def bordermesh(self):
+        """The border of the SiteCollection (cached)"""
+        if self._border is None:
+            self._border = get_border(self)
+        return self._border
+
+    @property
     def complete(self):
         """Return a complete SiteCollection object"""
         if self.indices is None:
@@ -276,6 +284,7 @@ class SiteCollection(object):
         new = object.__new__(self.__class__)
         new.indices = None
         new.array = self.array
+        new._border = self._border
         return new
 
     def at_sea_level(self):

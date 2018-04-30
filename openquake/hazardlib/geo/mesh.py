@@ -826,3 +826,14 @@ class RectangularMesh(Mesh):
         # compute and return weighted mean
         return numpy.sum(widths * mean_cell_lengths) / \
             numpy.sum(mean_cell_lengths)
+
+
+def get_border(mesh):
+    """
+    :param mesh: a mesh-like object with .lons, .lats, .depths
+    :returns: a mesh corresponding to the border of the original mesh
+    """
+    lons = mesh.lons % 360 if geo_utils.cross_idl(mesh) else mesh.lons
+    mp = shapely.geometry.MultiPoint(list(zip(lons, mesh.lats)))
+    x, y = mp.convex_hull.border.xy
+    return Mesh(x, y, mesh.depths)
